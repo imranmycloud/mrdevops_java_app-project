@@ -1,3 +1,6 @@
+
+@Library('my-shared-library') _
+
 pipeline {
     agent any
     tools {
@@ -10,12 +13,12 @@ pipeline {
                 sh 'java -version'
             }
         }
-        stage('Checkout') {
+        stage('Git Checkout') {
             steps {
                 checkout scm
             }
         }
-        stage('Build and Test') {
+        stage('Unit Test maven') {
             steps {
                 sh 'mvn clean test'
             }
