@@ -2,15 +2,15 @@
 
 pipeline {
     agent any 
+
     stages {
         stage('Git Checkout') {     
             steps {
-                script{
+                script {
                     gitCheckout(
-                      branch:"main"
-                      url:"https://github.com/imranmycloud/mrdevops_java_app-project.git"
+                        branch: "main",
+                        url: "https://github.com/imranmycloud/mrdevops_java_app-project.git"
                     )
-
                 }
             }
         }
