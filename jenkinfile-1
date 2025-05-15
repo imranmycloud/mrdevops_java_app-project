@@ -3,7 +3,7 @@
 pipeline {
     agent any
     tools {
-        jdk 'jdk11'         // Name must match what you configured in Jenkins
+        jdk 'java11'         // Name must match what you configured in Jenkins
         maven 'Maven'       // Or whatever name you've given your Maven tool
     }
 
