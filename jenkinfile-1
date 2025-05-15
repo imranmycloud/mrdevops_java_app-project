@@ -1,10 +1,11 @@
 @Library('my-shared-library') _
 
 pipeline {
-    agent any 
-    tools  {
-maven 'Maven'
-}
+    agent any
+    tools {
+        jdk 'jdk11'         // Name must match what you configured in Jenkins
+        maven 'Maven'       // Or whatever name you've given your Maven tool
+    }
 
     stages {
         stage('Git Checkout') {     
