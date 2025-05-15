@@ -13,11 +13,16 @@ pipeline {
                 sh 'java -version'
             }
         }
-        stage('Git Checkout') {
+         stages {
+        stage('Git Checkout') {     
             steps {
-                checkout scm
+                script {
+                    gitCheckout(
+                        branch: "main",
+                        url: "https://github.com/imranmycloud/mrdevops_java_app-project.git"
+                    )
+                }
             }
-        }
         stage('Unit Test maven') {
             steps {
                 sh 'mvn clean test'
