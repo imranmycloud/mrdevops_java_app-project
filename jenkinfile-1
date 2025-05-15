@@ -1,20 +1,25 @@
+@Library('my-shared-library') _
+
 pipeline {
-    agent any
-    tools {
-        jdk 'jdk17'
-    }
-    environment {
-        MAVEN_OPTS = '--add-opens jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED'
-    }
+    agent any 
+
     stages {
-        stage('Checkout') {
+        stage('Git Checkout') {     
             steps {
-                git url: 'https://github.com/imranmycloud/mrdevops_java_app-project.git', branch: 'main'
+                script {
+                    gitCheckout(
+                        branch: "main",
+                        url: "https://github.com/imranmycloud/mrdevops_java_app-project.git"
+                    )
+                }
             }
         }
-        stage('Build with Maven') {
+
+        stage('Unit Test maven') {     
             steps {
-                sh 'mvn clean test'
+                script {
+                    mvnTest()
+                }
             }
         }
     }
