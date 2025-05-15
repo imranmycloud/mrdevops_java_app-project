@@ -2,9 +2,6 @@
 
 pipeline {
     agent any 
-     tools {
-        jdk 'JDK11'  // Make sure you’ve added this in Jenkins → Global Tool Configuration
-
     stages {
         stage('Git Checkout') {     
             steps {
