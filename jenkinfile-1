@@ -38,5 +38,11 @@ pipeline {
                   sh 'mvn verify -DskipUnitTests'
             }
         }
+         stage('Static code ananlysis:Sonarqube') {
+        when{expression{ param.action =='create' }} 
+            steps {
+                  sh 'statiCodeAnalysis'
+            }
+        }
     }
 }
