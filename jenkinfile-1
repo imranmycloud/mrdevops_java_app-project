@@ -2,6 +2,9 @@
 
 pipeline {
     agent any
+        parameters{
+        choice(name:'action',choices:'create\ndelete',description:'choose create/Destroy')
+    }
     tools {
         jdk 'java17'     // Make sure this matches your JDK name in Jenkins Global Tool Config
         maven 'maven3'   // Your Maven tool name configured in Jenkins
@@ -13,6 +16,7 @@ pipeline {
             }
         }
         stage('Git Checkout') {     
+        when{expression{ param.action =='create' }} 
             steps {
                 script {
                     gitCheckout(
@@ -23,11 +27,13 @@ pipeline {
             }
         }
         stage('Unit Test maven') {
+        when{expression{ param.action =='create' }} 
             steps {
                 sh 'mvn clean test'
             }
         }
         stage('Integration Test maven') {
+        when{expression{ param.action =='create' }} 
             steps {
                   sh 'mvn verify -DskipUnitTests'
             }
