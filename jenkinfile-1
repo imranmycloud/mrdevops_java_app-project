@@ -29,7 +29,7 @@ pipeline {
         }
         stage('Integration Test maven') {
             steps {
-                sh 'mvnIntegrationTest'
+                  sh 'mvn verify -DskipUnitTests'
             }
         }
     }
