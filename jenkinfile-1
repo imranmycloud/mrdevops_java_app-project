@@ -47,8 +47,6 @@ pipeline {
                 expression { params.action == 'create' }
             }
             steps {
-                // Correct flag if you're skipping unit tests:
-                // Be sure to configure Failsafe plugin in your pom.xml
                 sh 'mvn verify -DskipTests=false -Dtest=!**/*UnitTest*'
             }
         }
@@ -58,10 +56,9 @@ pipeline {
                 expression { params.action == 'create' }
             }
             steps {
-             
-                script{
-                    statiCodeAnalysis(             
-
+                script {
+                    statiCodeAnalysis()
+                }
             }
         }
     }
