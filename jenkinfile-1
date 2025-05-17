@@ -3,6 +3,11 @@
 pipeline {
     agent any
 
+    environment {
+        JAVA_HOME = tool(name: 'java17', type: 'jdk')
+        PATH = "${JAVA_HOME}/bin:${env.PATH}"
+    }
+
     parameters {
         choice(name: 'action', choices: ['create', 'delete'], description: 'Choose create or delete')
     }
@@ -47,6 +52,7 @@ pipeline {
                 expression { params.action == 'create' }
             }
             steps {
+                // Customize this if you have Failsafe configured
                 sh 'mvn verify -DskipTests=false -Dtest=!**/*UnitTest*'
             }
         }
@@ -56,8 +62,8 @@ pipeline {
                 expression { params.action == 'create' }
             }
             steps {
-                script {
-                    statiCodeAnalysis()
+                withSonarQubeEnv('SonarQubeServer') {
+                    sh 'mvn sonar:sonar'
                 }
             }
         }
