@@ -58,10 +58,10 @@ pipeline {
                 expression { params.action == 'create' }
             }
             steps {
-                // Replace this with actual SonarQube scanner command
-                // This line currently would fail unless `statiCodeAnalysis` is a defined shell alias or function
-                sh 'mvn sonar:sonar -Dsonar.projectKey=your-key -Dsonar.host.url=http://your-sonar-server -Dsonar.login=your-token'
-                sh 'statiCodeAnalysis'()
+             
+                script{
+                    statiCodeAnalysis(             
+
             }
         }
     }
