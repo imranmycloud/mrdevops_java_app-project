@@ -2,21 +2,27 @@
 
 pipeline {
     agent any
-        parameters{
-        choice(name:'action',choices:'create\ndelete',description:'choose create/Destroy')
+
+    parameters {
+        choice(name: 'action', choices: ['create', 'delete'], description: 'Choose create or delete')
     }
+
     tools {
-        jdk 'java17'     // Make sure this matches your JDK name in Jenkins Global Tool Config
-        maven 'maven3'   // Your Maven tool name configured in Jenkins
+        jdk 'java17'
+        maven 'maven3'
     }
+
     stages {
         stage('Verify Java Version') {
             steps {
                 sh 'java -version'
             }
         }
-        stage('Git Checkout') {     
-        when{expression{ param.action =='create' }} 
+
+        stage('Git Checkout') {
+            when {
+                expression { params.action == 'create' }
+            }
             steps {
                 script {
                     gitCheckout(
@@ -26,22 +32,35 @@ pipeline {
                 }
             }
         }
-        stage('Unit Test maven') {
-        when{expression{ param.action =='create' }} 
+
+        stage('Unit Test (Maven)') {
+            when {
+                expression { params.action == 'create' }
+            }
             steps {
                 sh 'mvn clean test'
             }
         }
-        stage('Integration Test maven') {
-        when{expression{ param.action =='create' }} 
+
+        stage('Integration Test (Maven)') {
+            when {
+                expression { params.action == 'create' }
+            }
             steps {
-                  sh 'mvn verify -DskipUnitTests'
+                // Correct flag if you're skipping unit tests:
+                // Be sure to configure Failsafe plugin in your pom.xml
+                sh 'mvn verify -DskipTests=false -Dtest=!**/*UnitTest*'
             }
         }
-         stage('Static code ananlysis:Sonarqube') {
-        when{expression{ param.action =='create' }} 
+
+        stage('Static Code Analysis: SonarQube') {
+            when {
+                expression { params.action == 'create' }
+            }
             steps {
-                  sh 'statiCodeAnalysis'
+                // Replace this with actual SonarQube scanner command
+                // This line currently would fail unless `statiCodeAnalysis` is a defined shell alias or function
+                sh 'mvn sonar:sonar -Dsonar.projectKey=your-key -Dsonar.host.url=http://your-sonar-server -Dsonar.login=your-token'
             }
         }
     }
