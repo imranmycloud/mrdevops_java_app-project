@@ -52,7 +52,6 @@ pipeline {
                 expression { params.action == 'create' }
             }
             steps {
-                // Customize this if you have Failsafe configured
                 sh 'mvn verify -DskipTests=false -Dtest=!**/*UnitTest*'
             }
         }
@@ -62,13 +61,10 @@ pipeline {
                 expression { params.action == 'create' }
             }
             steps {
-            script{
-                def SonarQubecredentialsId = 'sonar-api'
-                StaticCodeAnalysis(SonarQubecredentialsId)
-
-            }
-                withSonarQubeEnv('SonarQubeServer') {
-                    sh 'mvn sonar:sonar'
+                script {
+                    withSonarQubeEnv(credentialsId: 'sonar-api') {
+                        sh 'mvn sonar:sonar'
+                    }
                 }
             }
         }
