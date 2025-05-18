@@ -2,6 +2,16 @@
 
 pipeline {
     agent any
+    tools {
+    jdk 'java17'
+    maven 'maven3'
+}
+
+environment {
+    JAVA_HOME = tool(name: 'java17', type: 'jdk')
+    PATH = "${JAVA_HOME}/bin:${env.PATH}"
+}
+
 
     parameters {
         choice(name: 'action', choices: ['create', 'delete'], description: 'Choose create/Destroy')
