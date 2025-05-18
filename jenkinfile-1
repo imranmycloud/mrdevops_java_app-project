@@ -60,6 +60,10 @@ pipeline {
             when {
                 expression { params.action == 'create' }
             }
+            environment {
+                JAVA_HOME = tool(name: 'java17', type: 'jdk')
+                PATH = "${JAVA_HOME}/bin:${env.PATH}"
+            }
             steps {
                 script {
                     withSonarQubeEnv(credentialsId: 'sonar-api') {
