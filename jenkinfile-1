@@ -13,7 +13,16 @@ pipeline{
                      gitCheckout(
                      branch: "main",
                      url: "https://github.com/imranmycloud/mrdevops_java_app-project.git"
-                    )
+             )
+             
+                }
+            }
+        }
+         stage('Unit Test maven'){
+
+            steps{
+                 script{
+                   mvnTest()
              
                 }
             }
