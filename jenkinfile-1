@@ -4,7 +4,7 @@ pipeline{
 
     agent any
     tools {
-        maven 'Maven 3.9'  // exact name from Global Tool Configuration
+        maven 'Maven 3.9.9'  // exact name from Global Tool Configuration
         jdk 'JDK17'        // make sure JDK17 is configured too
     }
 
