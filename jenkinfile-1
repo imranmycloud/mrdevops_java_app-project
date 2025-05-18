@@ -60,13 +60,13 @@ pipeline {
             when {
                 expression { params.action == 'create' }
             }
-            environment {
-                JAVA_HOME = tool(name: 'java17', type: 'jdk')
-                PATH = "${JAVA_HOME}/bin:${env.PATH}"
-            }
             steps {
-                script {
-                    withSonarQubeEnv(credentialsId: 'sonar-api') {
+                withSonarQubeEnv('SonarQubeServer') {
+                    withEnv([
+                        "JAVA_HOME=${tool(name: 'java17', type: 'jdk')}",
+                        "PATH=${tool(name: 'java17', type: 'jdk')}/bin:${env.PATH}"
+                    ]) {
+                        sh 'java -version' // confirm Java 17 is actually used
                         sh 'mvn sonar:sonar'
                     }
                 }
