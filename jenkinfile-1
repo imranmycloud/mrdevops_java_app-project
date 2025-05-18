@@ -1,39 +1,31 @@
 @Library('my-shared-library') _
 
-pipeline{
-
+pipeline {
     agent any
-   tools {
-        maven 'Maven 3.9'  // exact name from Global Tool Configuration
-        jdk 'JDK17'        // make sure JDK17 is configured too
+    tools {
+        maven 'Maven 3.9'   // must match Jenkins Global Tool Config name
+        jdk 'JDK17'         // must match Jenkins JDK config name
     }
     stages {
+        stage('Git Checkout') {
+            steps {
+                script {
+                    gitCheckout(
+                        branch: "main",
+                        url: "https://github.com/imranmycloud/mrdevops_java_app-project.git"
+                    )
+                }
+            }
+        }
         stage('Build') {
             steps {
                 sh 'mvn clean install'
             }
         }
-
-    stages{
-         
-        stage('Git Checkout'){
-
-            steps{
-                 script{
-                     gitCheckout(
-                     branch: "main",
-                     url: "https://github.com/imranmycloud/mrdevops_java_app-project.git"
-             )
-             
-                }
-            }
-        }
-         stage('Unit Test maven'){
-
-            steps{
-                 script{
-                   mvnTest()
-             
+        stage('Unit Test maven') {
+            steps {
+                script {
+                    mvnTest()
                 }
             }
         }
