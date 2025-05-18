@@ -2,10 +2,12 @@
 
 pipeline {
     agent any
+
     tools {
-        maven 'Maven 3.9'   // must match Jenkins Global Tool Config name
-        jdk 'JDK17'         // must match Jenkins JDK config name
+        maven 'Maven 3.9'  // Name must match Jenkins Global Tool Configuration
+        jdk 'JDK17'        // Name must match Jenkins JDK installation
     }
+
     stages {
         stage('Git Checkout') {
             steps {
@@ -17,11 +19,13 @@ pipeline {
                 }
             }
         }
+
         stage('Build') {
             steps {
                 sh 'mvn clean install'
             }
         }
+
         stage('Unit Test maven') {
             steps {
                 script {
