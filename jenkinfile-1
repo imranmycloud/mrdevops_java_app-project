@@ -3,72 +3,55 @@
 pipeline {
     agent any
 
-    environment {
-        JAVA_HOME = tool(name: 'java17', type: 'jdk')
-        PATH = "${JAVA_HOME}/bin:${env.PATH}"
-    }
-
     parameters {
-        choice(name: 'action', choices: ['create', 'delete'], description: 'Choose create or delete')
-    }
-
-    tools {
-        jdk 'java17'
-        maven 'maven3'
+        choice(name: 'action', choices: ['create', 'delete'], description: 'Choose create/Destroy')
     }
 
     stages {
-        stage('Verify Java Version') {
+        stage('Git Checkout') {
+            when { expression { params.action == 'create' } }
             steps {
-                sh 'java -version'
+                gitCheckout(
+                    branch: "main",
+                    url: "https://github.com/imranmycloud/mrdevops_java_app-project.git"
+                )
             }
         }
 
-        stage('Git Checkout') {
-            when {
-                expression { params.action == 'create' }
-            }
+        stage('Unit Test maven') {
+            when { expression { params.action == 'create' } }
             steps {
                 script {
-                    gitCheckout(
-                        branch: "main",
-                        url: "https://github.com/imranmycloud/mrdevops_java_app-project.git"
-                    )
+                    mvnTest()
                 }
             }
         }
 
-        stage('Unit Test (Maven)') {
-            when {
-                expression { params.action == 'create' }
-            }
+        stage('Integration Test maven') {
+            when { expression { params.action == 'create' } }
             steps {
-                sh 'mvn clean test'
+                script {
+                    mvnIntegrationTest()
+                }
             }
         }
 
-        stage('Integration Test (Maven)') {
-            when {
-                expression { params.action == 'create' }
-            }
+        stage('Static code analysis: Sonarqube') {
+            when { expression { params.action == 'create' } }
             steps {
-                sh 'mvn verify -DskipTests=false -Dtest=!**/*UnitTest*'
+                script {
+                    def SonarQubecredentialsId = 'sonar-api'
+                    statiCodeAnalysis(SonarQubecredentialsId)
+                }
             }
         }
 
-        stage('Static Code Analysis: SonarQube') {
-            when {
-                expression { params.action == 'create' }
-            }
+        stage('Quality Gate Status Check : Sonarqube') {
+            when { expression { params.action == 'create' } }
             steps {
-                withSonarQubeEnv('SonarQubeServer') {
-                    withEnv([
-                        "JAVA_HOME=${tool(name: 'java17', type: 'jdk')}",
-                        "PATH=${tool(name: 'java17', type: 'jdk')}/bin:${env.PATH}"
-                    ]) {
-                        sh 'java -version' // confirm Java 17 is actually used
-                        sh 'mvn sonar:sonar'
-                    }
+                script {
+                    def SonarQubecredentialsId = 'sonar-api'
+                    QualityGateStatus(SonarQubecredentialsId)
                 }
             }
         }
